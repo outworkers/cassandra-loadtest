@@ -5,7 +5,7 @@ import ReleaseTransformations._
 
 import scala.util.Try
 
-val phantomVersion = "2.6.4"
+val phantomVersion = "2.9.2"
 
 addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.3")
 
@@ -33,11 +33,14 @@ lazy val root = (project in file("."))
       BuildInfoKey.action("sbtVersion")(sbtVersion.value),
       BuildInfoKey.action("dependencies")(Seq("cassandra"))
     ),
-
+    fork in run := true,
+    javaOptions in run ++= Seq(
+      "-XX:MetaspaceSize=512m",
+      "-XX:MaxMetaspaceSize=1g"
+    ),
     libraryDependencies ++=Seq(
       "joda-time" % "joda-time" % "2.9.3",
       "org.joda" % "joda-convert" % "1.8",
-      "com.outworkers"   %% "phantom-connectors"            % phantomVersion,
       "com.outworkers"   %% "phantom-dsl"                   % phantomVersion,
       "com.outworkers"   %% "phantom-thrift"                % phantomVersion,
       "io.getquill" %% "quill-cassandra" % "1.2.1",

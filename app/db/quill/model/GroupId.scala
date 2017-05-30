@@ -13,22 +13,10 @@ case class GroupId(groupId: UUID, id: UUID, createTs: Date)
 
 object GroupId {
 
-  implicit val readsDate = Reads[Date](js =>
-    js.validate[String].map[Date](dtString =>
-      Util.toDate(dtString)
-    )
+  implicit val readsDate: Reads[Date] = Reads[Date](js =>
+    js.validate[String].map[Date](dtString => Util.sdf.parse(dtString))
   )
 
-  implicit val groupIdReads = Json.reads[GroupId]
-
-  implicit val groupIdWrites = new Writes[GroupId] {
-    def writes(groupId: GroupId): JsValue = {
-      Json.obj(
-        "groupId" -> groupId.groupId,
-        "id" -> groupId.id,
-        "createTs" -> Util.toString(groupId.createTs)
-      )
-    }
-  }
+  implicit val groupIdFormat: OFormat[GroupId] = Json.format[GroupId]
 
 }

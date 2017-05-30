@@ -24,11 +24,21 @@ trait GroupIdRepo {
 
 }
 
-class GroupIdRepository extends DatabaseProvider[GroupIdDB] with GroupIdRepo {
+object GroupDatabase {
+
   private val config = ConfigFactory.load()
   private val useSSL: Boolean = config.getBoolean("db.cassandra.ssl")
 
-  def database = new GroupIdDB(Connector.connector(useSSL))
+  val db = new GroupIdDB({
+    Console.println("Initialising a databaaaase")
+    Connector.connector(useSSL)
+  })
+}
+
+
+class GroupIdRepository extends DatabaseProvider[GroupIdDB] with GroupIdRepo {
+
+  val database = GroupDatabase.db
 
   /**
     *
@@ -56,12 +66,8 @@ class GroupIdRepository extends DatabaseProvider[GroupIdDB] with GroupIdRepo {
       .groupIds
       .findById(ae.groupId, ae.id)
       .flatMap {
-        case Some(x) => {
-          save(ae, false)
-        }
-        case None => {
-          save(ae, true)
-        }
+        case Some(x) => save(ae, isNew = false)
+        case None => save(ae, isNew = true)
       }
   }
 
@@ -87,15 +93,9 @@ class GroupIdRepository extends DatabaseProvider[GroupIdDB] with GroupIdRepo {
     * @return
     */
   def delete(groupId: UUID, id: UUID): Future[Boolean] = {
-    database
-        .groupIds
-        .deleteById(groupId, id)
-        .flatMap   {
-          case rs => database.
-                      groupIds.
-                      deleteById(groupId, id).map(_.wasApplied())
-        }
+    for {
+      del <- database.groupIds.deleteById(groupId, id)
+      del2 <- database.groupIds.deleteById(groupId, id).map(_.wasApplied())
+    } yield del2
   }
-
-
 }

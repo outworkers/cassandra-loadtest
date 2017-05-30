@@ -1,8 +1,4 @@
 package models
-
-import java.time.ZonedDateTime
-//import java.time.format.DateTimeFormatter
-import org.joda.time.format.DateTimeFormat
 import java.util.UUID
 
 import db.phantom.model.GroupId
@@ -11,10 +7,6 @@ import models.GroupTestData._
 import org.joda.time.DateTime
 import org.scalatest.FlatSpec
 import play.api.libs.json.{JsValue, Json}
-import util.Util
-
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.format.DateTimeFormatter
 
 case class GroupTestData()
 
@@ -24,7 +16,7 @@ object GroupTestData {
   val groupId = UUID.fromString("25c49000-f8f2-11d4-8080-808080808080")
 
   val testDateTime = new DateTime(2016, 5, 6, 1, 1, 1)
-  var testDateTimeStr = Util.toString(testDateTime)
+  var testDateTimeStr = testDateTime.toString
 
 
   val expectedResult: JsValue = Json.parse(

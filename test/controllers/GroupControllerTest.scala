@@ -59,7 +59,7 @@ class GroupControllerTest extends PlaySpec with MockitoSugar with Results {
           Json.obj(
             "groupId" -> groupId,
             "id" -> id,
-            "createTs" -> Util.toString(createTs)
+            "createTs" -> createTs.toString()
           )
         )
       )
@@ -139,7 +139,7 @@ class GroupControllerTest extends PlaySpec with MockitoSugar with Results {
           Json.obj(
             "groupId" -> groupId,
             "id" -> id,
-            "createTs" -> Util.toString(createTs)
+            "createTs" -> createTs.toString()
             )
           )
       val actual: Future[Result] = GroupController.saveGroup(groupId)(request)
@@ -166,8 +166,10 @@ class GroupControllerTest extends PlaySpec with MockitoSugar with Results {
           Json.obj(
             "groupId" -> groupId,
             "id" -> id,
-            "createTs" -> Util.toString(createTs))
+            "createTs" -> createTs.toString
+          )
         )
+
       val actual: Future[Result] = GroupController.saveGroup(groupId)(request)
       val bodyJson = contentAsJson(actual)
       val statusCode = status(actual)

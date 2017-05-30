@@ -8,16 +8,16 @@ import org.joda.time.DateTime
 
 import scala.concurrent.Future
 
-abstract class GroupIdTable extends CassandraTable[GroupIdTable, GroupId] with RootConnector {
+abstract class GroupIdTable extends Table[GroupIdTable, GroupId] {
 
   override def tableName: String = "group_id"
 
   // First the partition key, which is also a Primary key in Cassandra.
-  object id extends UUIDColumn(this) with PartitionKey
+  object id extends UUIDColumn with PartitionKey
 
   // Only keyed fields can be queried on
-  object groupId extends UUIDColumn(this) with PartitionKey {override lazy val name = "group_id"}
-  object createTs extends DateTimeColumn(this) with ClusteringOrder {override lazy val name = "create_ts"}
+  object groupId extends UUIDColumn with PartitionKey {override lazy val name = "group_id"}
+  object createTs extends DateTimeColumn with ClusteringOrder {override lazy val name = "create_ts"}
 
   def findByGroupId(groupId: UUID): Future[List[GroupId]] =
     select
@@ -33,11 +33,8 @@ abstract class GroupIdTable extends CassandraTable[GroupIdTable, GroupId] with R
       .one()
 
   def save(groupId: GroupId): Future[ResultSet] = {
-    Console.println("Called Acouunt Entry Id Table save. ")
-    insert
-      .value(_.id, groupId.id)
-      .value(_.groupId, groupId.groupId)
-      .value(_.createTs, groupId.createTs)
+    Console.println("Called Account Entry Id Table save. ")
+    store(groupId)
       .consistencyLevel_=(ConsistencyLevel.ONE)
       .future()
   }

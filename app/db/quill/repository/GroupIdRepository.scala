@@ -81,12 +81,8 @@ class GroupIdRepository @Inject()(quillContext: QuillContext) {
     println("POST: going to QUILL")
     findById(ae.groupId, ae.id)
       .flatMap {
-        case Some(x) => {
-          save(ae, false)
-        }
-        case None => {
-          save(ae, true)
-        }
+        case Some(x) => save(ae, isNew = false)
+        case None => save(ae, isNew = true)
       }
   }
 

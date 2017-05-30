@@ -17,16 +17,5 @@ object GroupId {
     )
   )
 
-  implicit val groupIdReads = Json.reads[GroupId]
-
-  implicit val groupIdWrites = new Writes[GroupId] {
-
-    def writes(groupId: GroupId): JsValue = {
-      Json.obj(
-        "groupId" -> groupId.groupId,
-        "id" -> groupId.id,
-        "createTs" -> Util.toString(groupId.createTs)
-      )
-    }
-  }
+  implicit val groupIdFormat = Json.format[GroupId]
 }
