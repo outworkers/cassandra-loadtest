@@ -15,7 +15,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services._
 import util.Util
-import db.phantom.model.GroupId
+import db.model.GroupId
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -33,7 +33,7 @@ class GroupControllerTest extends PlaySpec with MockitoSugar with Results {
 
       val groupId = UUID.randomUUID
       val id = UUID.randomUUID
-      val createTs = new DateTime(2016, 5, 6, 1, 1, 1)
+      val createTs = new DateTime(2016, 5, 6, 1, 1, 1).toDate
 
       val groupIdObj = GroupId(
         groupId = groupId,
@@ -53,16 +53,7 @@ class GroupControllerTest extends PlaySpec with MockitoSugar with Results {
 
       statusCode mustBe OK
 
-      bodyJson mustBe Json.obj(
-        "groupId" -> groupId,
-        "ids" -> Json.arr(
-          Json.obj(
-            "groupId" -> groupId,
-            "id" -> id,
-            "createTs" -> createTs.toString()
-          )
-        )
-      )
+      bodyJson mustBe Json.toJson(groupIdObj)
     }
 
     "return empty group if there is no group in database" in {
@@ -118,12 +109,12 @@ class GroupControllerTest extends PlaySpec with MockitoSugar with Results {
 
     val groupId = UUID.randomUUID
     val id = UUID.randomUUID
-    val createTs = new DateTime(2016, 5, 6, 1, 1, 1).withZone(DateTimeZone.forID("UTC"))
+    val createTs = new DateTime(2016, 5, 6, 1, 1, 1).withZone(DateTimeZone.UTC)
 
     val groupIdObj = GroupId(
       groupId = groupId,
       id = id,
-      createTs = createTs
+      createTs = createTs.toDate
     )
 
     "return Created when an entry is added" in {

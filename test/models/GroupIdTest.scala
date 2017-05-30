@@ -1,7 +1,7 @@
 package models
 import java.util.UUID
 
-import db.phantom.model.GroupId
+import db.model.GroupId
 import dto.GroupResponse
 import models.GroupTestData._
 import org.joda.time.DateTime
@@ -16,7 +16,7 @@ object GroupTestData {
   val groupId = UUID.fromString("25c49000-f8f2-11d4-8080-808080808080")
 
   val testDateTime = new DateTime(2016, 5, 6, 1, 1, 1)
-  var testDateTimeStr = testDateTime.toString
+  var testDateTimeStr = testDateTime.getMillis.toString
 
 
   val expectedResult: JsValue = Json.parse(
@@ -27,7 +27,7 @@ object GroupTestData {
        |  {
        |     "groupId":"25c49000-f8f2-11d4-8080-808080808080",
        |     "id":"19e471f2-132e-11e7-93ae-92361f002671",
-       |     "createTs":"$testDateTimeStr"
+       |     "createTs": $testDateTimeStr
        |   }]
        | }
       """.stripMargin)
@@ -35,7 +35,7 @@ object GroupTestData {
 }
 
 class GroupIdTest extends FlatSpec {
-  val sampleGroupId = GroupId(groupId, randomUUID, testDateTime)
+  val sampleGroupId = GroupId(groupId, randomUUID, testDateTime.toDate)
 
   "An GroupId" should "be converted to Json" in {
     val group = GroupResponse(GroupTestData.groupId, List(sampleGroupId))

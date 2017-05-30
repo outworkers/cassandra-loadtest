@@ -42,7 +42,7 @@ lazy val root = (project in file("."))
       "joda-time" % "joda-time" % "2.9.3",
       "org.joda" % "joda-convert" % "1.8",
       "com.outworkers"   %% "phantom-dsl"                   % phantomVersion,
-      "com.outworkers"   %% "phantom-thrift"                % phantomVersion,
+      "com.outworkers"   %% "util-samplers"                 % "0.35.0" % Test,
       "io.getquill" %% "quill-cassandra" % "1.2.1",
       "com.typesafe" % "config" % "1.3.1",
       "org.scalatestplus.play" %% "scalatestplus-play" % "2.0.0" % "test,it",

@@ -1,14 +1,12 @@
 package db.quill.repository
 
 import java.util.UUID
-import java.util.Date
 import javax.inject.Inject
 
-import db.quill.model.{GroupId}
+import db.model.GroupId
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{ExecutionContext, Future}
-
+import scala.concurrent.Future
 
 /**
   * Created by yleung on 2017-05-26.

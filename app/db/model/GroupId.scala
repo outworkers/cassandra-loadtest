@@ -1,13 +1,12 @@
-package db.phantom.model
+package db.model
 
-import java.util.UUID
+import java.util.{Date, UUID}
 
 import org.joda.time.DateTime
-import org.joda.time.format.{DateTimeFormat, DateTimeFormatter, ISODateTimeFormat}
 import play.api.libs.json._
 import _root_.util.Util
 
-case class GroupId(groupId: UUID, id: UUID, createTs: DateTime)
+case class GroupId(groupId: UUID, id: UUID, createTs: Date)
 
 object GroupId {
 

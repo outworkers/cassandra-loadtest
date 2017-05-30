@@ -7,7 +7,7 @@ import akka.actor.ActorSystem
 import javax.inject._
 
 import com.typesafe.config.ConfigFactory
-import db.phantom.model.GroupId
+import db.model.GroupId
 import dto.{ErrorCode, ErrorResponse, GroupResponse, QuillGroupResponse}
 import play.api.i18n.Lang
 
@@ -30,7 +30,7 @@ class GroupController @Inject()(
       service.listGroups(groupId)
         .map {
           case Right(a) =>
-            Ok(GroupResponse(groupId, a).toJson)
+            Ok(Json.toJson(GroupResponse(groupId, a)))
           case Left(e) =>
             ServiceUnavailable(
               ErrorResponse(
@@ -85,7 +85,7 @@ class GroupController @Inject()(
   }
 
   def saveGroup2(groupId: UUID) = Action.async(parse.json) { request =>
-    request.body.validate[db.quill.model.GroupId].fold({ errors =>
+    request.body.validate[GroupId].fold({ errors =>
       Future.successful(
         BadRequest(
           Json.obj(

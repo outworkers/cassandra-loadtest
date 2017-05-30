@@ -3,10 +3,11 @@ package db.phantom.repository
 import com.outworkers.phantom.dsl._
 import com.outworkers.phantom.connectors.CassandraConnection
 import db.phantom.connector.Connector
-import db.phantom.model._
+import db.model._
 import com.typesafe.config.ConfigFactory
-
 import java.util.UUID
+
+import db.phantom.GroupIdTable
 
 import scala.concurrent.Future
 

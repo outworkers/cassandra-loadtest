@@ -2,16 +2,15 @@ package dto
 
 import java.util.UUID
 
-import db.quill.model.GroupId
-import play.api.libs.json.Json
+import db.model.GroupId
+import play.api.libs.json.{JsValue, Json}
 
 case class QuillGroupResponse(groupId: UUID, ids: List[GroupId])
 
 object QuillGroupResponse {
-  implicit val quillGroupResponseReads = Json.reads[QuillGroupResponse]
-  implicit val quillGroupResponseWrites = Json.writes[QuillGroupResponse]
+  implicit val quillGroupResponseFormat = Json.format[QuillGroupResponse]
 
-  implicit class QuillGroupResponseOps(gr: QuillGroupResponse) {
-    def toJson = Json.toJson(gr)
+  implicit class QuillGroupResponseOps(val gr: QuillGroupResponse) extends AnyVal {
+    def toJson: JsValue = Json.toJson(gr)
   }
 }

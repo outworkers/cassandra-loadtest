@@ -4,8 +4,7 @@ import scala.language.postfixOps
 import javax.inject._
 
 import com.outworkers.phantom.dsl.UUID
-import com.typesafe.config.ConfigFactory
-import db.quill.model.{GroupId}
+import db.model.GroupId
 import db.quill.repository.GroupIdRepository
 
 import scala.concurrent.{ExecutionContext, Future}
