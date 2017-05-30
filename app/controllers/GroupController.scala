@@ -19,7 +19,11 @@ import services.{GroupIdNotFound, GroupService, RepositoryFailure, QuillGroupSer
 import scala.annotation.tailrec
 import scala.concurrent.ExecutionContext
 
-class GroupController @Inject()(actorSystem: ActorSystem, service: GroupService, service2: QuillGroupService)(implicit exec: ExecutionContext) extends Controller {
+class GroupController @Inject()(
+  actorSystem: ActorSystem,
+  service: GroupService,
+  service2: QuillGroupService
+)(implicit exec: ExecutionContext) extends Controller {
 
 
   def getGroup(groupId: UUID) = Action.async { implicit req =>
