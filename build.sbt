@@ -41,14 +41,13 @@ lazy val root = (project in file("."))
     libraryDependencies ++=Seq(
       "joda-time" % "joda-time" % "2.9.3",
       "org.joda" % "joda-convert" % "1.8",
-      "com.outworkers"   %% "phantom-dsl"                   % phantomVersion,
-      "com.outworkers"   %% "util-samplers"                 % "0.35.0" % Test,
+      "com.outworkers" %% "phantom-dsl"                   % phantomVersion,
+      "com.outworkers" %% "util-samplers"                 % "0.35.0" % Test,
       "io.getquill" %% "quill-cassandra" % "1.2.1",
       "com.typesafe" % "config" % "1.3.1",
       "org.scalatestplus.play" %% "scalatestplus-play" % "2.0.0" % "test,it",
-      "org.mockito" % "mockito-core" % "2.7.22" % "test",
-      "org.scalatest" % "scalatest_2.11" % "2.2.6" % "test" ,
-      "io.netty" % "netty" % "3.10.6.Final"
+      "org.mockito" % "mockito-core" % "2.7.22" % Test,
+      "org.scalatest" %% "scalatest" % "2.2.6" % Test
     ),
 
     TwirlKeys.templateFormats += ("yaml" -> "play.twirl.api.TxtFormat"),
