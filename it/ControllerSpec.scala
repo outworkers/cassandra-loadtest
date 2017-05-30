@@ -1,35 +1,23 @@
-import java.util.UUID
-import java.util.Date
+import java.util.{Date, UUID}
 
-import com.typesafe.config.ConfigFactory
-import db.model.GroupId
-import org.joda.time.{DateTime, DateTimeZone}
 import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
+import org.joda.time.{DateTime, DateTimeZone}
+import org.scalatest.OptionValues
 import org.scalatestplus.play._
 import play.api.libs.json._
 import play.api.test.Helpers.{route, _}
-import play.api.test.Helpers._
 import play.api.test._
-import _root_.util.Util
 
-class ControllerSpec extends PlaySpec with OneAppPerSuite {
+class ControllerSpec extends PlaySpec with OneAppPerSuite with OptionValues {
 
-  private val config = ConfigFactory.load()
-
-  val fmtBack: DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").withZone(DateTimeZone.forID("UTC"))
+  val fmtBack: DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").withZone(DateTimeZone.UTC)
   val groupId = UUID.randomUUID
   val id = UUID.randomUUID
-  val createTs: DateTime = new DateTime
+  val createTs: DateTime = new DateTime(DateTimeZone.UTC)
   val createDate: Date = new Date
 
   "GroupController /groups/{groupId}/ids POST" should {
     "return a ok when new group id is posted" in {
-
-      val groupIdObj = GroupId(
-        groupId = groupId,
-        id = id,
-        createTs = createTs.toDate
-      )
 
       val request = FakeRequest(POST, "/groups/" + groupId + "/ids")
         .withHeaders("Host" -> "localhost")
@@ -41,7 +29,7 @@ class ControllerSpec extends PlaySpec with OneAppPerSuite {
           )
         )
 
-      val response = route(app, request).get
+      val response = route(app, request).value
 
       status(response) mustBe CREATED
       contentAsJson(response) mustBe Json.obj("status" -> "created")
@@ -110,7 +98,7 @@ class ControllerSpec extends PlaySpec with OneAppPerSuite {
           )
         )
 
-      println("DATE USED: " + createDate.getTime)
+      info("DATE USED: " + createDate.getTime)
 
       val response = route(app, request).get
 
@@ -124,7 +112,9 @@ class ControllerSpec extends PlaySpec with OneAppPerSuite {
     "return a group id when get end point with the groupId UID is hit" in {
       val request = FakeRequest(GET, "/groups2/" + groupId + "/ids")
         .withHeaders("Host" -> "localhost", "Accept-Language" -> "en")
-      println("DATE GOT BACK: " + createDate.getTime)
+
+      info("DATE GOT BACK: " + createDate.getTime)
+
       val response = route(app, request).get
       status(response) mustBe OK
       contentAsJson(response) mustBe Json.obj(
@@ -138,8 +128,6 @@ class ControllerSpec extends PlaySpec with OneAppPerSuite {
         )
       )
     }
-
-
   }
 
 

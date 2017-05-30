@@ -25,6 +25,7 @@ class GroupController @Inject()(
   service2: QuillGroupService
 )(implicit exec: ExecutionContext) extends Controller {
 
+  val created = Json.obj("status" -> "created")
 
   def getGroup(groupId: UUID) = Action.async { implicit req =>
       service.listGroups(groupId)
@@ -56,8 +57,7 @@ class GroupController @Inject()(
       service
         .insertGroup(groupIdObj)
         .map {
-          case Right(_) =>
-            Created(Json.obj("status" -> "created"))
+          case Right(_) => Created(created)
           case Left(e) =>
             ServiceUnavailable(
               ErrorResponse(
@@ -100,7 +100,7 @@ class GroupController @Inject()(
         .insertGroup(quillGroupIdObj)
         .map {
           case Right(_) =>
-            Created(Json.obj("status" -> "created"))
+            Created(created)
           case Left(e) =>
             ServiceUnavailable(
               ErrorResponse(

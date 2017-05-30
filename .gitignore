@@ -33,3 +33,4 @@ play-scala
 
 loadtest/phantom/results
 loadtest/quill/results
+logs
