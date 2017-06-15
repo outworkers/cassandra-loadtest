@@ -53,13 +53,10 @@ class GroupControllerTest extends PlaySpec with MockitoSugar with Results {
 
       statusCode mustBe OK
 
-      bodyJson.validate[GroupId] match {
-        case JsSuccess(js, _) => js mustEqual groupIdObj
-        case JsError(e) => Console.println(e)
-      }
-
-      bodyJson.validate[GroupId].asOpt.value mustEqual groupIdObj
-    }
+      bodyJson mustBe Json.obj(
+        "groupId" -> groupId,
+        "ids" -> Json.arr()
+      )
 
     "return empty group if there is no group in database" in {
       val mockGroupService = mock[GroupService]
