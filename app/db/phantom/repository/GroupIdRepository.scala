@@ -7,7 +7,6 @@ import com.outworkers.phantom.connectors.CassandraConnection
 import com.outworkers.phantom.dsl.{ context => _, _ }
 import com.typesafe.config.ConfigFactory
 import db.model._
-import db.phantom.GroupIdTable
 import db.phantom.connector.Connector
 
 import scala.concurrent.Future
@@ -32,7 +31,7 @@ object GroupDatabase {
   private val useSSL: Boolean = config.getBoolean("db.cassandra.ssl")
 
   val db = new GroupIdDB({
-    Console.println("Initialising a databaaaase")
+    Console.println("Initialising a database")
     Connector.connector(useSSL)
   })
 }
@@ -61,9 +60,10 @@ class GroupIdRepository extends DatabaseProvider[GroupIdDB] with GroupIdRepo {
       .findById(groupId, id)
 
   val saveQuery =
-    database.groupIds.insert.value(_.groupId, ?)
-      .value(_.id, ?)
-      .value(_.createTs, ?)
+    database.groupIds.insert
+      .p_value(_.groupId, ?)
+      .p_value(_.id, ?)
+      .p_value(_.createTs, ?)
       .prepare()
 
   /**
@@ -72,13 +72,7 @@ class GroupIdRepository extends DatabaseProvider[GroupIdDB] with GroupIdRepo {
     * @return
     */
   def saveEntry(ae: GroupId): Future[Boolean] = {
-    database
-      .groupIds
-      .findById(ae.groupId, ae.id)
-      .flatMap {
-        case Some(x) => save(ae, isNew = false)
-        case None => save(ae, isNew = true)
-      }
+    save(ae, isNew = true)
   }
 
   /**
@@ -88,10 +82,7 @@ class GroupIdRepository extends DatabaseProvider[GroupIdDB] with GroupIdRepo {
     * @return
     */
   def save(gi: GroupId, isNew: Boolean): Future[Boolean] = {
-    database
-      .groupIds
-      .save(gi)
-      .flatMap (rs => database.groupIds.save(gi).map(_.wasApplied))
+    saveQuery.bind(gi).future().map(_.wasApplied())
   }
 
   /**
@@ -104,7 +95,6 @@ class GroupIdRepository extends DatabaseProvider[GroupIdDB] with GroupIdRepo {
     */
   def delete(groupId: UUID, id: UUID): Future[Boolean] = {
     for {
-      del <- database.groupIds.deleteById(groupId, id)
       del2 <- database.groupIds.deleteById(groupId, id).map(_.wasApplied())
     } yield del2
   }

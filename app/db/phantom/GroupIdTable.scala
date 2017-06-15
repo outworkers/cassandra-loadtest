@@ -9,13 +9,20 @@ import scala.concurrent.Future
 
 abstract class GroupIdTable extends Table[GroupIdTable, GroupId] {
 
+  override def tableName: String = "group_id"
+
   // First the partition key, which is also a Primary key in Cassandra.
-  object id extends UUIDColumn with PartitionKey
+  object groupId extends UUIDColumn with PartitionKey {
+    override lazy val name = "group_id"
+  }
+
+  object id extends UUIDColumn with PrimaryKey {
+    override lazy val name = "create_ts"
+  }
 
   // Only keyed fields can be queried on
-  object groupId extends UUIDColumn with PartitionKey
 
-  object createTs extends DateColumn with ClusteringOrder
+  object createTs extends DateColumn with PrimaryKey
 
   def findByGroupId(groupId: UUID): Future[List[GroupId]] =
     select
