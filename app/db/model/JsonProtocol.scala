@@ -1,6 +1,7 @@
 package db.model
 
-import java.util.Date
+import java.text.SimpleDateFormat
+import java.util.{Date, TimeZone}
 
 import dto.ErrorCode.ErrorCode
 import dto.{EnumerationHelpers, ErrorCode, ErrorResponse, GroupResponse}
@@ -10,11 +11,13 @@ class JsonProtocol {
 
   implicit lazy val format = Json.format[ErrorResponse]
 
-  implicit lazy val dateFormat: OFormat[Date] = new OFormat[Date] {
+  val sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+  sdf.setTimeZone(TimeZone.getTimeZone("UTC"))
 
-    override def reads(json: JsValue): JsResult[Date] = (json \ "date").validate[Long].map(new Date(_))
+  implicit lazy val dateFormat: Format[Date] = new Format[Date] {
+    override def reads(json: JsValue): JsResult[Date] = json.validate[String].map(sdf.parse)
 
-    override def writes(o: Date): JsObject = JsObject(Seq("date" -> JsNumber(o.getTime)))
+    override def writes(o: Date): JsValue = JsString(sdf.format(o))
   }
 
   implicit lazy val groupIdFormat: OFormat[GroupId] = Json.format[GroupId]

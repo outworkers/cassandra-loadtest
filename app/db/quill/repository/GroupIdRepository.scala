@@ -52,22 +52,6 @@ class GroupIdRepository @Inject()(quillContext: QuillContext) {
     ctx.run(q).map(_.headOption)
   }
 
-  /*
-    * Find the group entry by id. Only used for rollback.
-    *
-    * @param groupId
-    * @param id
-    * @return
-  *         */
-  private def findByGroupId(groupId: UUID, id: UUID): Future[Option[GroupId]] = {
-    println("GET: going to QUILL")
-    val q = quote {
-      query[GroupId]
-        .filter(_.groupId == lift(groupId))
-        .filter(_.id == lift(id))
-    }
-    ctx.run(q).map(_.headOption)
-  }
 
   /*
     * Save a group by finding the id first

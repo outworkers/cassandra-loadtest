@@ -23,7 +23,6 @@ lazy val root = (project in file("."))
     name := "cassandra-loadtest",
     organization := "test",
     scalaVersion := "2.11.8",
-
     buildInfoPackage := "test",
     buildInfoKeys := Seq[BuildInfoKey](
       BuildInfoKey.action("buildDate")(new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date())),

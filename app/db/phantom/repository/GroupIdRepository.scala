@@ -1,13 +1,14 @@
-package db.phantom.repository
+package db.phantom
+package repository
 
-import com.outworkers.phantom.dsl._
-import com.outworkers.phantom.connectors.CassandraConnection
-import db.phantom.connector.Connector
-import db.model._
-import com.typesafe.config.ConfigFactory
 import java.util.UUID
 
+import com.outworkers.phantom.connectors.CassandraConnection
+import com.outworkers.phantom.dsl.{ context => _, _ }
+import com.typesafe.config.ConfigFactory
+import db.model._
 import db.phantom.GroupIdTable
+import db.phantom.connector.Connector
 
 import scala.concurrent.Future
 
@@ -41,6 +42,8 @@ class GroupIdRepository extends DatabaseProvider[GroupIdDB] with GroupIdRepo {
 
   val database = GroupDatabase.db
 
+  database.create()
+
   /**
     *
     * @param groupId
@@ -56,6 +59,12 @@ class GroupIdRepository extends DatabaseProvider[GroupIdDB] with GroupIdRepo {
     database
       .groupIds
       .findById(groupId, id)
+
+  val saveQuery =
+    database.groupIds.insert.value(_.groupId, ?)
+      .value(_.id, ?)
+      .value(_.createTs, ?)
+      .prepare()
 
   /**
     *
