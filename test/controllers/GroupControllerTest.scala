@@ -9,7 +9,7 @@ import org.mockito.Mockito.when
 import org.scalatest.mock.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import play.api.i18n.Lang
-import play.api.libs.json.Json
+import play.api.libs.json.{JsError, JsSuccess, Json}
 import play.api.mvc.{Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -53,7 +53,12 @@ class GroupControllerTest extends PlaySpec with MockitoSugar with Results {
 
       statusCode mustBe OK
 
-      bodyJson mustBe Json.toJson(groupIdObj)
+      bodyJson.validate[GroupId] match {
+        case JsSuccess(js, _) => js mustEqual groupIdObj
+        case JsError(e) => Console.println(e)
+      }
+
+      bodyJson.validate[GroupId].asOpt.value mustEqual groupIdObj
     }
 
     "return empty group if there is no group in database" in {
