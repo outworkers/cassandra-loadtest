@@ -8,7 +8,3 @@ case class GroupId(
   id: UUID,
   createTs: Date
 )
-
-object GroupId {
-  implicit val groupIdFormat: OFormat[GroupId] = Json.format[GroupId]
-}

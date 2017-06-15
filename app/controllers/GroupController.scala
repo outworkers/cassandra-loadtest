@@ -1,23 +1,17 @@
 package controllers
 
-import java.util.{Locale, UUID}
+import java.util.UUID
 import javax.inject.Inject
 
 import akka.actor.ActorSystem
-import javax.inject._
-
-import com.typesafe.config.ConfigFactory
 import db.model.GroupId
-import dto.{ErrorCode, ErrorResponse, GroupResponse, QuillGroupResponse}
-import play.api.i18n.Lang
-
-import scala.concurrent.Future
+import dto.{ ErrorCode, ErrorResponse, GroupResponse }
 import play.api.libs.json.{JsError, Json}
-import play.api.mvc.{Action, AnyContent, Controller}
-import services.{GroupIdNotFound, GroupService, RepositoryFailure, QuillGroupService}
+import play.api.mvc.{Action, Controller}
+import services.{GroupService, QuillGroupService}
+import db.model.JsonProtocol._
 
-import scala.annotation.tailrec
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class GroupController @Inject()(
   actorSystem: ActorSystem,
@@ -37,7 +31,7 @@ class GroupController @Inject()(
               ErrorResponse(
                 ErrorCode.DBServiceNotAvailable,
                 List(ErrorCode.LookupMsgs(ErrorCode.DBServiceNotAvailable) + " " + e.toString)
-              ).toJson
+              ).asJValue()
             )
         }
   }
@@ -63,7 +57,7 @@ class GroupController @Inject()(
               ErrorResponse(
                 ErrorCode.ServiceError,
                 List(ErrorCode.LookupMsgs(ErrorCode.DBServiceNotAvailable) + " " + e.toString)
-              ).toJson
+              ).asJValue()
             )
         }
     })
@@ -73,13 +67,13 @@ class GroupController @Inject()(
     service2.listGroups(groupId)
       .map {
         case Right(a) =>
-          Ok(QuillGroupResponse(groupId, a).toJson)
+          Ok(GroupResponse(groupId, a).asJValue())
         case Left(e) =>
           ServiceUnavailable(
             ErrorResponse(
               ErrorCode.DBServiceNotAvailable,
               List(ErrorCode.LookupMsgs(ErrorCode.DBServiceNotAvailable) + " " + e.toString)
-            ).toJson
+            ).asJValue()
           )
       }
   }
@@ -106,7 +100,7 @@ class GroupController @Inject()(
               ErrorResponse(
                 ErrorCode.ServiceError,
                 List(ErrorCode.LookupMsgs(ErrorCode.DBServiceNotAvailable) + " " + e.toString)
-              ).toJson
+              ).asJValue()
             )
         }
     })

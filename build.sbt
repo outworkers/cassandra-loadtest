@@ -40,8 +40,6 @@ lazy val root = (project in file("."))
       "-XX:MaxMetaspaceSize=1g"
     ),
     libraryDependencies ++=Seq(
-      "joda-time" % "joda-time" % "2.9.3",
-      "org.joda" % "joda-convert" % "1.8",
       "com.outworkers" %% "phantom-dsl"                   % phantomVersion,
       "com.outworkers" %% "util-samplers"                 % util % Test,
       "io.getquill" %% "quill-cassandra" % "1.2.1",
