@@ -2,8 +2,9 @@ package db.phantom
 
 import java.util.UUID
 
+import com.outworkers.phantom.CassandraTable
 import com.outworkers.phantom.dsl._
-import db.model.GroupId
+import org.joda.time.DateTime
 
 import scala.concurrent.Future
 
