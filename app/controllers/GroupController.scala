@@ -4,6 +4,7 @@ import java.util.UUID
 import javax.inject.Inject
 
 import akka.actor.ActorSystem
+import com.google.inject.Singleton
 import db.model.GroupId
 import dto.{ErrorCode, ErrorResponse, GroupResponse}
 import play.api.libs.json.{JsError, Json}
@@ -13,6 +14,7 @@ import db.model.JsonProtocol._
 
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class GroupController @Inject()(
   actorSystem: ActorSystem,
   service: GroupService,
@@ -27,8 +29,6 @@ class GroupController @Inject()(
         case Right(a) =>
           Ok(GroupResponse(groupId, a).asJValue())
         case Left(e) =>
-
-          Console.println(e)
           Results.BadRequest(
             ErrorResponse(
               ErrorCode.DBServiceNotAvailable,
@@ -55,7 +55,6 @@ class GroupController @Inject()(
         .map {
           case Right(_) => Created(created)
           case Left(e) =>
-            Console.println(e)
             Results.BadRequest(
               ErrorResponse(
                 ErrorCode.ServiceError,

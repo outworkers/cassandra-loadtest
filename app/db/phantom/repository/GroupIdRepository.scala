@@ -4,7 +4,7 @@ package repository
 import java.util.UUID
 
 import com.outworkers.phantom.connectors.CassandraConnection
-import com.outworkers.phantom.dsl.{ context => _, _ }
+import com.outworkers.phantom.dsl._
 import com.typesafe.config.ConfigFactory
 import db.model._
 import db.phantom.connector.Connector
@@ -40,8 +40,6 @@ object GroupDatabase {
 class GroupIdRepository extends DatabaseProvider[GroupIdDB] with GroupIdRepo {
 
   val database = GroupDatabase.db
-
-  database.create()
 
   /**
     *
@@ -82,7 +80,7 @@ class GroupIdRepository extends DatabaseProvider[GroupIdDB] with GroupIdRepo {
     * @return
     */
   def save(gi: GroupId, isNew: Boolean): Future[Boolean] = {
-    saveQuery.bind(gi).future().map(_.wasApplied())
+   saveQuery.bind(gi).future() map (_ => true)
   }
 
   /**

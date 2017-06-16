@@ -125,7 +125,6 @@ class GroupControllerTest extends PlaySpec with MockitoSugar with Results {
       val actual: Future[Result] = GroupController.saveGroup(groupIdObj.groupId)(request)
       val bodyJson = contentAsJson(actual)
       val statusCode = status(actual)
-      Console.println(bodyJson)
 
       statusCode mustBe CREATED
 
@@ -149,7 +148,6 @@ class GroupControllerTest extends PlaySpec with MockitoSugar with Results {
       val bodyJson = contentAsJson(actual)
       val statusCode = status(actual)
 
-      Console.println(bodyJson)
       statusCode mustBe SERVICE_UNAVAILABLE
 
       bodyJson mustBe Json.obj(

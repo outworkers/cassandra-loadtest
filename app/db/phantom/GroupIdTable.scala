@@ -2,7 +2,7 @@ package db.phantom
 
 import java.util.UUID
 
-import com.outworkers.phantom.dsl.{ context => _, _ }
+import com.outworkers.phantom.dsl._
 import db.model.GroupId
 
 import scala.concurrent.Future
@@ -17,12 +17,14 @@ abstract class GroupIdTable extends Table[GroupIdTable, GroupId] {
   }
 
   object id extends UUIDColumn with PrimaryKey {
-    override lazy val name = "create_ts"
+    override lazy val name = "id"
   }
 
   // Only keyed fields can be queried on
 
-  object createTs extends DateColumn with PrimaryKey
+  object createTs extends DateColumn with PrimaryKey {
+    override lazy val name = "create_ts"
+  }
 
   def findByGroupId(groupId: UUID): Future[List[GroupId]] =
     select
@@ -36,15 +38,6 @@ abstract class GroupIdTable extends Table[GroupIdTable, GroupId] {
       .and(_.id eqs id)
       .consistencyLevel_=(ConsistencyLevel.ONE)
       .one()
-
-  def save(groupId: GroupId): Future[ResultSet] = {
-    insert
-      .value(_.id, groupId.id)
-      .value(_.groupId, groupId.groupId)
-      .value(_.createTs, groupId.createTs)
-      .consistencyLevel_=(ConsistencyLevel.ONE)
-      .future()
-  }
 
   def deleteById(groupId: UUID,  id: UUID): Future[ResultSet] =
     delete
