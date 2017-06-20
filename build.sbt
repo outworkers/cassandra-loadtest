@@ -1,6 +1,6 @@
 import java.text.SimpleDateFormat
 import java.util.Date
-
+import io.gatling
 import ReleaseTransformations._
 
 import scala.util.Try
@@ -18,10 +18,11 @@ lazy val Versions = new {
   val quill = "1.2.1"
   val config = "1.3.1"
   val scalatestPlusPlay = "3.0.0-RC1"
+  val gatling = "2.2.2"
 }
 
 lazy val root = (project in file("."))
-  .enablePlugins(PlayScala, JavaAppPackaging, BuildInfoPlugin, NewRelic)
+  .enablePlugins(PlayScala, JavaAppPackaging, BuildInfoPlugin, NewRelic, GatlingPlugin)
 	.configs(IntegrationTest)
 	.settings(Defaults.itSettings :_*)
   .settings(cassandraVersion := "3.9")
@@ -44,7 +45,9 @@ lazy val root = (project in file("."))
       "-XX:MetaspaceSize=512m",
       "-XX:MaxMetaspaceSize=1g"
     ),
-    libraryDependencies ++=Seq(
+    libraryDependencies ++= Seq(
+      "io.gatling.highcharts" % "gatling-charts-highcharts" % Versions.gatling % Test,
+      "io.gatling" % "gatling-test-framework" % Versions.gatling % Test,
       "com.outworkers" %% "phantom-dsl" % Versions.phantom,
       "com.outworkers" %% "util-samplers" % Versions.util % Test,
       "io.getquill" %% "quill-cassandra" % Versions.quill,

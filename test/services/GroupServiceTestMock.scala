@@ -1,16 +1,13 @@
 package services
 
-import java.time.ZonedDateTime
 import java.util.UUID
 
-import com.typesafe.config.ConfigFactory
-import db.model.{GroupId}
+import db.model.GroupId
 import db.phantom.repository.GroupIdRepository
 import org.joda.time.DateTime
 import org.mockito.Mockito._
 import org.scalatest._
-import org.scalatest.mock.MockitoSugar
-import util.Util
+import org.scalatest.mockito.MockitoSugar
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
@@ -18,8 +15,8 @@ import scala.concurrent.{Await, Future}
 
 class GroupServiceTestMock extends FunSuite with MockitoSugar with Matchers with EitherValues with PrivateMethodTester {
 
-  def createGoodEffect[A](a: A) = Future(Right(a))
-  def createBadEffect[A <: ServiceError](a: A) = Future(Left(a))
+  def createGoodEffect[A](a: A) = Future.successful(Right(a))
+  def createBadEffect[A <: ServiceError](a: A) = Future.successful(Left(a))
 
   val xGroupId = UUID.randomUUID
   val xId = UUID.randomUUID

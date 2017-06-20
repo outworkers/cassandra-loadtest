@@ -14,3 +14,5 @@ addSbtPlugin("com.tuplejump.com.github.hochgi" % "sbt-cassandra"   % "1.0.4")
 addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.7.0")
 
 addSbtPlugin("com.gilt.sbt" % "sbt-newrelic" % "0.1.16")
+
+addSbtPlugin("io.gatling" % "gatling-sbt" % "2.2.0")
