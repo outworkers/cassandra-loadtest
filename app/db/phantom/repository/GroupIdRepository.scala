@@ -30,10 +30,7 @@ object GroupDatabase {
   private val config = ConfigFactory.load()
   private val useSSL: Boolean = config.getBoolean("db.cassandra.ssl")
 
-  val db = new GroupIdDB({
-    Console.println("Initialising a database")
-    Connector.connector(useSSL)
-  })
+  val db = new GroupIdDB(Connector.connector(useSSL))
 }
 
 
@@ -41,28 +38,27 @@ class GroupIdRepository extends DatabaseProvider[GroupIdDB] with GroupIdRepo {
 
   val database = GroupDatabase.db
 
+
+  private[this] val findByGroupQuery = database.groupIds.select.where(_.groupId eqs ?).prepare()
+  private[this] val findByIdQuery = database.groupIds.select.where(_.groupId eqs ?).and(_.id eqs ?).prepare()
+  private[this] val deleteByIdQuery = database.groupIds.delete.where(_.groupId eqs ?).and(_.id eqs ?).prepare()
+
   /**
     *
     * @param groupId
     * @return
     */
   def findByGroupId(groupId: UUID): Future[List[GroupId]] =
-    database
-      .groupIds
-      .findByGroupId(groupId)
+  findByGroupQuery.bind(groupId).fetch()
 
 
-  def findById(groupId: UUID, id: UUID): Future[Option[GroupId]] =
-    database
-      .groupIds
-      .findById(groupId, id)
+  def findById(groupId: UUID, id: UUID): Future[Option[GroupId]] = findByIdQuery.bind(groupId, id).one()
 
-  val saveQuery =
-    database.groupIds.insert
-      .p_value(_.groupId, ?)
-      .p_value(_.id, ?)
-      .p_value(_.createTs, ?)
-      .prepare()
+  val saveQuery = database.groupIds.insert
+    .p_value(_.groupId, ?)
+    .p_value(_.id, ?)
+    .p_value(_.createTs, ?)
+    .prepare()
 
   /**
     *
@@ -93,7 +89,7 @@ class GroupIdRepository extends DatabaseProvider[GroupIdDB] with GroupIdRepo {
     */
   def delete(groupId: UUID, id: UUID): Future[Boolean] = {
     for {
-      del2 <- database.groupIds.deleteById(groupId, id).map(_.wasApplied())
+      del2 <- deleteByIdQuery.bind(groupId, id).future().map(_.wasApplied())
     } yield del2
   }
 }

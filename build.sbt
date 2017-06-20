@@ -5,17 +5,23 @@ import ReleaseTransformations._
 
 import scala.util.Try
 
-val phantomVersion = "2.11.0"
-val util = "0.36.0"
-
 addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.3")
 
 val javaTestOptions = "-Dconfig.file=conf/" + Option("test.application").getOrElse("application") + ".conf"
 
 val buildSha = Try(Process("git rev-parse --short HEAD").!!.stripLineEnd).getOrElse("?")
 
+lazy val Versions = new {
+  val scalatest = "3.0.1"
+  val phantom = "2.11.1"
+  val util = "0.36.0"
+  val quill = "1.2.1"
+  val config = "1.3.1"
+  val scalatestPlusPlay = "3.0.0-RC1"
+}
+
 lazy val root = (project in file("."))
-  .enablePlugins(PlayScala, JavaAppPackaging, BuildInfoPlugin,NewRelic)
+  .enablePlugins(PlayScala, JavaAppPackaging, BuildInfoPlugin, NewRelic)
 	.configs(IntegrationTest)
 	.settings(Defaults.itSettings :_*)
   .settings(cassandraVersion := "3.9")
@@ -39,13 +45,13 @@ lazy val root = (project in file("."))
       "-XX:MaxMetaspaceSize=1g"
     ),
     libraryDependencies ++=Seq(
-      "com.outworkers" %% "phantom-dsl"                   % phantomVersion,
-      "com.outworkers" %% "util-samplers"                 % util % Test,
-      "io.getquill" %% "quill-cassandra" % "1.2.1",
-      "com.typesafe" % "config" % "1.3.1",
-      "org.scalatestplus.play" %% "scalatestplus-play" % "2.0.0" % "test,it",
+      "com.outworkers" %% "phantom-dsl" % Versions.phantom,
+      "com.outworkers" %% "util-samplers" % Versions.util % Test,
+      "io.getquill" %% "quill-cassandra" % Versions.quill,
+      "com.typesafe" % "config" % Versions.config,
+      "org.scalatestplus.play" %% "scalatestplus-play" % Versions.scalatestPlusPlay % "test,it",
       "org.mockito" % "mockito-core" % "2.7.22" % Test,
-      "org.scalatest" %% "scalatest" % "2.2.6" % Test
+      "org.scalatest" %% "scalatest" % Versions.scalatest % Test
     ),
 
     TwirlKeys.templateFormats += ("yaml" -> "play.twirl.api.TxtFormat"),
