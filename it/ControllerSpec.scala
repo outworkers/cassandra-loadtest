@@ -21,7 +21,7 @@ class ControllerSpec extends PlaySpec with GuiceOneAppPerSuite with OptionValues
   val createDate: Date = new Date
   val groupIdObject = GroupId(groupId, id, createTs.toDate)
   val groupIdJson = groupIdObject.asJValue()
-  val respJson = GroupResponse(id, groupIdObject :: Nil).asJValue()
+  val respJson = GroupResponse(groupId, groupIdObject :: Nil).asJValue()
 
 
   "GroupController /groups/{groupId}/ids POST" should {
