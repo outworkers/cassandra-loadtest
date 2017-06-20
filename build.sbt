@@ -1,6 +1,5 @@
 import java.text.SimpleDateFormat
 import java.util.Date
-import io.gatling
 import ReleaseTransformations._
 
 import scala.util.Try
@@ -43,7 +42,9 @@ lazy val root = (project in file("."))
     fork in run := true,
     javaOptions in run ++= Seq(
       "-XX:MetaspaceSize=512m",
-      "-XX:MaxMetaspaceSize=1g"
+      "-XX:MaxMetaspaceSize=1g",
+      "-XX:+HeapDumpOnOutOfMemoryError",
+      "-Xmx:1g"
     ),
     libraryDependencies ++= Seq(
       "io.gatling.highcharts" % "gatling-charts-highcharts" % Versions.gatling % Test,
