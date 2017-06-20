@@ -6,5 +6,5 @@ import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
 
 package object phantom {
 
-  implicit val ctx: ExecutionContextExecutor = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(8))
+  //implicit val ctx: ExecutionContextExecutor = ExecutionContext.fromExecutor(Executors.newFixedThreadPool(8))
 }
